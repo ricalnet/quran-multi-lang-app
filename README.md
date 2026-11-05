@@ -149,10 +149,10 @@ docker compose up --build
 
 | Service | URL |
 |---------|-----|
-| Web App | http://localhost:3000 |
-| API + Swagger | http://localhost:8000/docs |
-| GraphQL Playground | http://localhost:8000/graphql |
-| Redis | localhost:6379 |
+| Web App | http://localhost:7000 |
+| API + Swagger | http://localhost:7001/docs |
+| GraphQL Playground | http://localhost:7001/graphql |
+| Redis | internal only (no host port) |
 
 ### Option 2: Manual Setup
 
@@ -174,6 +174,9 @@ cd src/desktop && npm install && npm start
 # Generate SQLite Database
 pip install -r scripts/requirements.txt && python scripts/generate_sqlite.py
 ```
+
+> Manual dev servers use framework defaults (`3000` for web, `8000` for API).
+> The Docker stack maps them to `127.0.0.1:7000` and `127.0.0.1:7001`.
 
 ---
 
@@ -250,7 +253,7 @@ The FastAPI backend serves both **REST** and **GraphQL** endpoints.
 }
 ```
 
-> 📖 Full API documentation: [`docs/API.md`](docs/API.md) | Swagger UI at `http://localhost:8000/docs`
+> 📖 Full API documentation: [`docs/API.md`](docs/API.md) | Swagger UI at `http://localhost:7001/docs`
 
 ---
 
@@ -264,11 +267,11 @@ docker compose up --build
 
 **Services:**
 
-| Container | Image | Port | Purpose |
-|-----------|-------|------|---------|
-| `web` | Node 20 Alpine | 3000 | Next.js frontend |
-| `api` | Python 3.12 Slim | 8000 | FastAPI backend |
-| `redis` | Redis 7 Alpine | 6379 | Caching layer |
+| Container | Image | Host Port | Purpose |
+|-----------|-------|-----------|---------|
+| `web` | Node 20 Alpine | `127.0.0.1:7000` | Next.js frontend |
+| `api` | Python 3.12 Slim | `127.0.0.1:7001` | FastAPI backend |
+| `redis` | Redis 7 Alpine | — (internal only) | Caching layer |
 
 Both Dockerfiles use **multi-stage builds** for optimized production images.
 
